@@ -15,7 +15,7 @@ public class GettingStarted {
              There are several ways to initialize a Polynomial. See all the constructors
              in the JavaDoc.
          */
-        Polynomial fx = new Polynomial(2);
+        Polynomial fx = new Polynomial(new double[]{5, 1, 3}); // pass in the coefficients
         System.out.println("f(x) = " + fx);
 
         // Get a coefficient
