@@ -16,18 +16,18 @@ public class GettingStarted {
              in the JavaDoc.
          */
         Polynomial fx = new Polynomial(2);
-
         System.out.println("f(x) = " + fx);
-        System.out.println("f(2) = " + fx.eval(2));
 
         // Get a coefficient
-        System.out.println();
         System.out.println("The coefficient for x^2 is: " + fx.getCoefficientAtTerm(2));  // term is the exponent of x
         System.out.println("The coefficient for x^1 is: " + fx.getCoefficientAtTerm(1));  // term is the exponent of x
 
         // Alternatively, get all coefficients in one array
         double[] coefs = fx.getCoefficientArray();
         System.out.println("The coefficient for x^2 is: " + coefs[2]);
+
+        // Evaluate the polynomial
+        System.out.println("f(5) = " + fx.eval(5));
 
         /*
               Open Source Physics (OSP) Example
@@ -40,9 +40,9 @@ public class GettingStarted {
         plotFrame.setDefaultCloseOperation(3);  // if you want closing the graph to end the program
         plotFrame.setVisible(true); // need this to show the graph, it is false by default
 
-        // Plotting points
+        // Plotting lines
 
-        // EXAMPLE 1: Append points
+        // OPTION 1: Append connected points
         plotFrame.setLineColor(0, Color.RED);   // optional set line color
         plotFrame.setConnected(true); // connect the points
         plotFrame.append(0, 1, fx.eval(1));
@@ -50,7 +50,7 @@ public class GettingStarted {
         plotFrame.append(1, 2, fx.eval(2)); // a different datasetIndex creates a new line
         plotFrame.append(1, 3, fx.eval(3)); // a different datasetIndex creates a new line
 
-        // EXAMPLE 2: a Trail.
+        // OPTION 2: Add a Trail
         Trail trail = new Trail();
         plotFrame.addDrawable(trail); // add the trail to the plot frame
         trail.color = Color.BLUE;   // optional specify color
