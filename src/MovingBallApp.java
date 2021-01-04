@@ -72,6 +72,7 @@ public class MovingBallApp extends AbstractSimulation {
                 + Math.abs(control.getDouble("Starting Y position") - circle.getY())+ " meters.");
     }
 
+
     /**
      * Required main method, runs the simulation.
      * @param args
