@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FallingBallApp extends AbstractSimulation {
-  static final int RADIUS = 10; // (m)
+  static final int RADIUS = 3; // (m)
   static final int MASS = 7; // (kg)
   static final int INITIAL_X_1 = -5;
   static final int INITIAL_X_2 = 5;

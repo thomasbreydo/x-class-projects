@@ -29,7 +29,7 @@ public class Particle extends Circle {
     acceleration = initialAcceleration;
 
     weight = mass * GRAVITY;
-    crossSectionalArea = 2 * Math.PI * radius;
+    crossSectionalArea = Math.PI * radius * radius;
   }
 
   void step(double deltaTime) {

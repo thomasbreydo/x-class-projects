@@ -38,7 +38,7 @@ public class Particle2D extends Circle {
     acceleration = initialAcceleration;
 
     weight = mass * GRAVITY;
-    crossSectionalArea = 2 * Math.PI * radius;
+    crossSectionalArea = Math.PI * radius * radius;
   }
 
   void step(double deltaTime) {
@@ -66,8 +66,7 @@ public class Particle2D extends Circle {
   void updateAcceleration(double pressure) {
     double drag, totalNetForce;
     for (int i = 0; i < velocity.length; ++i) {
-      drag =
-          pressure * DRAG_CONSTANT * crossSectionalArea * velocity[i] * velocity[i] / (mass * 2);
+      drag = pressure * DRAG_CONSTANT * crossSectionalArea * velocity[i] * velocity[i] / (mass * 2);
       totalNetForce = weight + drag;
       acceleration[i] = totalNetForce / mass;
     }
