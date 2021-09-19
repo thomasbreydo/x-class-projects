@@ -30,8 +30,8 @@ public class ProjectileApp extends AbstractSimulation {
     plotFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     plotFrame.setVisible(true);
 
-    particle1 = new Particle2D(RADIUS, MASS, INITIAL_X, INITIAL_Y, INITIAL_VELOCITY);
-    particle2 = new Particle2D(RADIUS, MASS, INITIAL_X, INITIAL_Y, INITIAL_VELOCITY);
+    particle1 = new Particle2D(RADIUS, MASS, INITIAL_X, INITIAL_Y, INITIAL_VELOCITY.clone());
+    particle2 = new Particle2D(RADIUS, MASS, INITIAL_X, INITIAL_Y, INITIAL_VELOCITY.clone());
     particle1.color = Color.RED;
     particle2.color = Color.GREEN;
     particles = new Particle2D[] {particle1, particle2};
