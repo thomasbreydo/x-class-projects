@@ -34,7 +34,7 @@ public class GettingStarted {
     Trail gTrail = new Trail();
     fTrail.color = Color.RED;
     vTrail.color = Color.GREEN;
-    gTrail.color = Color.YELLOW;
+    gTrail.color = Color.ORANGE;
     plotFrame.addDrawable(fTrail);
     plotFrame.addDrawable(vTrail);
     plotFrame.addDrawable(gTrail);
