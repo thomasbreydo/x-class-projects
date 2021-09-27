@@ -5,7 +5,7 @@ public class Quadratic {
   /**
    * @param a quadratic coefficient
    * @param b linear coefficient
-   * @param c constant coefficient
+   * @param c constant term
    */
   Quadratic(double a, double b, double c) {
     this.a = a;
