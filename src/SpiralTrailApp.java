@@ -8,30 +8,28 @@ import org.opensourcephysics.frames.PlotFrame;
 import javax.swing.*;
 
 enum Direction {
-  WEST,
-  SOUTH,
-  EAST,
-  NORTH,
+  W,
+  S,
+  E,
+  N,
 }
 
-enum Segment {
-  A,
-  B,
+enum SegmentPart {
+  ONE,
+  TWO,
 }
 
 public class SpiralTrailApp extends AbstractSimulation {
   PlotFrame plotFrame = new PlotFrame("x", "y", "Spiral Trail");
   Trail trail = new Trail();
-  Direction[] directions =
-      new Direction[] {Direction.WEST, Direction.SOUTH, Direction.EAST, Direction.NORTH};
-  private int directionIndex = 0;
-  private int x = 3;
-  private int y = 3;
-  private Segment segment = Segment.A;
-  private int segmentLength = 1;
-  private int drawnSoFar = 0;
-  private int nRemaining = 25;
-
+  Direction[] directions = new Direction[] {Direction.W, Direction.S, Direction.E, Direction.N};
+  private int directionIndex;
+  private int x;
+  private int y;
+  private SegmentPart segmentPart;
+  private int segmentLength;
+  private int drawnSoFar;
+  private int nRemaining;
 
   void move() {
     updateX();
@@ -42,11 +40,11 @@ public class SpiralTrailApp extends AbstractSimulation {
   boolean timeToChangeDirection() {
     if (++drawnSoFar != segmentLength) return false;
     drawnSoFar = 0;
-    if (segment == Segment.B) {
-      segment = Segment.A;
+    if (segmentPart == SegmentPart.TWO) {
+      segmentPart = SegmentPart.ONE;
       ++segmentLength;
     } else {
-      segment = Segment.B;
+      segmentPart = SegmentPart.TWO;
     }
     return true;
   }
@@ -57,15 +55,15 @@ public class SpiralTrailApp extends AbstractSimulation {
 
   void updateX() {
     switch (directions[directionIndex]) {
-      case WEST -> --x;
-      case EAST -> ++x;
+      case W -> --x;
+      case E -> ++x;
     }
   }
 
   void updateY() {
     switch (directions[directionIndex]) {
-      case SOUTH -> --y;
-      case NORTH -> ++y;
+      case S -> --y;
+      case N -> ++y;
     }
   }
 
@@ -96,10 +94,10 @@ public class SpiralTrailApp extends AbstractSimulation {
      directionIndex = 0;
      x = 3;
      y = 3;
-     segment = Segment.A;
+     segmentPart = SegmentPart.ONE;
      segmentLength = 1;
      drawnSoFar = 0;
-     nRemaining= 25;
+     nRemaining = 25;
      trail.clear();
   }
 
