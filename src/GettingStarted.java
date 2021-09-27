@@ -18,29 +18,24 @@ public class GettingStarted {
     System.out.println("3. f(x) + v(x) = " + fx.plus(vx));
     System.out.println("4. " + vx.getCoefficientAtTerm(1));
     System.out.println("5. Coefficients for v(x):");
-    int i = 0;
     for (double c : vx.getCoefficientArray()) {
-      System.out.println(++i + ". " + c);
+      System.out.println(c);
     }
 
     // Intro to OSP
-    PlotFrame plotFrame = new PlotFrame("x", "y", "f(x), v(x), g(x)");
+    PlotFrame plotFrame = new PlotFrame("x", "y", "Getting Started");
     plotFrame.setVisible(true); // need this to show the graph, it is false by default
     plotFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     plotFrame.setPreferredMinMax(0, 10, 0, 15); // x and y ranges
     plotFrame.setConnected(true);
-    Trail fTrail = new Trail();
-    Trail vTrail = new Trail();
+    plotFrame.setLineColor(0, Color.RED);
+    plotFrame.setLineColor(1, Color.GREEN);
     Trail gTrail = new Trail();
-    fTrail.color = Color.RED;
-    vTrail.color = Color.GREEN;
     gTrail.color = Color.ORANGE;
-    plotFrame.addDrawable(fTrail);
-    plotFrame.addDrawable(vTrail);
     plotFrame.addDrawable(gTrail);
     for (int x = 0; x <= 10; ++x) {
-      fTrail.addPoint(x, fx.eval(x));
-      vTrail.addPoint(x, vx.eval(x));
+      plotFrame.append(0, x, fx.eval(x));
+      plotFrame.append(1, x, vx.eval(x));
       gTrail.addPoint(x, gx.eval(x));
     }
   }
