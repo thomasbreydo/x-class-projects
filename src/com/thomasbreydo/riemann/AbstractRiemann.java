@@ -103,43 +103,6 @@ public abstract class AbstractRiemann {
     public double R;
   }
 
-  static class BorderPairIterator implements Iterator<BorderPair> {
-    final double X_LOWER;
-    final double DX;
-    final int SUBINTERVALS;
-    int i = 0;
-
-    public BorderPairIterator(AbstractRiemann riemann) {
-      X_LOWER = riemann.xLower;
-      DX = riemann.calculateDeltaX();
-      SUBINTERVALS = riemann.subintervals;
-    }
-    /**
-     * Returns {@code true} if the iteration has more elements. (In other words, returns {@code
-     * true} if {@link #next} would return an element rather than throwing an exception.)
-     *
-     * @return {@code true} if the iteration has more elements
-     */
-    @Override
-    public boolean hasNext() {
-      return i < SUBINTERVALS;
-    }
-
-    /**
-     * Returns the next element in the iteration.
-     *
-     * @return the next element in the iteration
-     */
-    @Override
-    public BorderPair next() {
-      BorderPair bp = new BorderPair();
-      bp.L = X_LOWER + DX * i;
-      bp.R = bp.L + DX;
-      ++i;
-      return bp;
-    }
-  }
-
   static class BorderPairIterable implements Iterable<BorderPair> {
     final AbstractRiemann RIEMANN;
 
@@ -155,6 +118,44 @@ public abstract class AbstractRiemann {
     @Override
     public Iterator<BorderPair> iterator() {
       return new BorderPairIterator(RIEMANN);
+    }
+
+    static class BorderPairIterator implements Iterator<BorderPair> {
+      final double X_LOWER;
+      final double DX;
+      final int SUBINTERVALS;
+      int i = 0;
+
+      public BorderPairIterator(AbstractRiemann riemann) {
+        X_LOWER = riemann.xLower;
+        DX = riemann.calculateDeltaX();
+        SUBINTERVALS = riemann.subintervals;
+      }
+
+      /**
+       * Returns {@code true} if the iteration has more elements. (In other words, returns {@code
+       * true} if {@link #next} would return an element rather than throwing an exception.)
+       *
+       * @return {@code true} if the iteration has more elements
+       */
+      @Override
+      public boolean hasNext() {
+        return i < SUBINTERVALS;
+      }
+
+      /**
+       * Returns the next element in the iteration.
+       *
+       * @return the next element in the iteration
+       */
+      @Override
+      public BorderPair next() {
+        BorderPair bp = new BorderPair();
+        bp.L = X_LOWER + DX * i;
+        bp.R = bp.L + DX;
+        ++i;
+        return bp;
+      }
     }
   }
 }
