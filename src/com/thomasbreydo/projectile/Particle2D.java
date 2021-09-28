@@ -14,12 +14,21 @@ public class Particle2D extends Circle {
   private double velocityY;
 
   public Particle2D(double radius, double mass, double initialX, double initialY) {
-    this(radius, mass, initialX, initialY, new double[] {0, 0}, new double[] {0, GRAVITY});
+    this(radius, mass, initialX, initialY, new double[] {0, 0});
   }
 
   public Particle2D(
       double radius, double mass, double initialX, double initialY, double[] initialVelocity) {
     this(radius, mass, initialX, initialY, initialVelocity, new double[] {0, GRAVITY});
+  }
+
+  public static double[] computeVelocity(double angle, double speed) {
+    return new double[] {speed * Math.cos(angle), speed * Math.sin(angle)};
+  }
+
+  public Particle2D(
+      double radius, double mass, double initialX, double initialY, double angle, double speed) {
+    this(radius, mass, initialX, initialY, computeVelocity(angle, speed));
   }
 
   public Particle2D(
