@@ -84,4 +84,8 @@ public class Particle2D extends Circle {
   public double getVelocityY() {
     return velocityY;
   }
+
+  public void bounceX() {
+    velocityX *= -1;
+  }
 }
