@@ -35,6 +35,7 @@ public class BaseballSimulationApp extends AbstractSimulation {
   @Override
   public void initialize() {
     plotFrame.setPreferredMinMax(0, DISTANCE_TO_WALL, 0, 35);
+    plotFrame.setSize(775, 328);
     plotFrame.setVisible(true);
     plotFrame.setDefaultCloseOperation(PlotFrame.EXIT_ON_CLOSE);
     plotFrame.clearDrawables();
