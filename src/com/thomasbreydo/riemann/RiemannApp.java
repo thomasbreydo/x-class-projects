@@ -18,20 +18,15 @@ public class RiemannApp {
   static final LeftHandPlot leftPlot = new LeftHandPlot(func, leftFrame, L, R, subintervals);
   static final RightHandPlot rightPlot = new RightHandPlot(func, rightFrame, L, R, subintervals);
   static final TrapezoidPlot trapPlot = new TrapezoidPlot(func, trapFrame, L, R, subintervals);
+  static final AbstractRiemann[] plots = new AbstractRiemann[]{leftPlot, rightPlot, trapPlot};
 
   public static void main(String[] args) {
-    leftPlot.configPlotFrame(YMIN, YMAX);
-    rightPlot.configPlotFrame(YMIN, YMAX);
-    trapPlot.configPlotFrame(YMIN, YMAX);
-    leftPlot.drawRiemannSlices();
-    rightPlot.drawRiemannSlices();
-    trapPlot.drawRiemannSlices();
-    leftPlot.plotPolynomial();
-    rightPlot.plotPolynomial();
-    trapPlot.plotPolynomial();
-    leftPlot.plotAccFunc();
-    rightPlot.plotAccFunc();
-    trapPlot.plotAccFunc();
+    for (AbstractRiemann plot : plots) {
+      plot.configPlotFrame(YMIN, YMAX);
+      plot.drawRiemannSlices();
+      plot.plotPolynomial();
+      plot.plotAccFunc();
+    }
     System.out.println("Polynomial: " + func);
     System.out.println("Interval: " + L + " to " + R);
     System.out.println("Subintervals: " + subintervals);
