@@ -74,7 +74,10 @@ public class Particle2D extends Circle {
   void updateAcceleration(double pressure) {
     double dragX, dragY, totalNetForceY, totalNetForceX;
     dragX = pressure * DRAG_CONSTANT * crossSectionalArea * velocityX * velocityX / 2;
-    totalNetForceX = -dragX;
+    if (velocityX > 0)
+      totalNetForceX = -dragX;
+    else
+      totalNetForceX = dragX;
     accelerationX = totalNetForceX / mass;
     dragY = pressure * DRAG_CONSTANT * crossSectionalArea * velocityY * velocityY / 2;
     if (velocityY > 0)
