@@ -54,7 +54,7 @@ public class Particle extends Circle {
   }
 
   void updateAcceleration(double pressure) {
-    double drag = pressure * DRAG_CONSTANT * crossSectionalArea * velocity * velocity / (mass * 2);
+    double drag = pressure * DRAG_CONSTANT * crossSectionalArea * velocity * velocity / 2;
     double totalNetForce = weight + drag;
     acceleration = totalNetForce / mass;
   }
