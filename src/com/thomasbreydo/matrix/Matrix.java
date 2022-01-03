@@ -42,9 +42,9 @@ public class Matrix {
     for (double[] row : matrix) Arrays.fill(row, fillValue);
   }
 
-  /** @return {@code true} if {@code a} is within {@code 1e-8} of zero. */
-  private static boolean basicallyZero(double a) {
-    return Math.abs(a) < 1e-8;
+  /** @return {@code true} if {@code a} is within {@code 1e-8} of {@code b}. */
+  private static boolean basicallyEqual(double a, double b) {
+    return Math.abs(a - b) < 1e-8;
   }
 
   /**
@@ -88,7 +88,7 @@ public class Matrix {
    */
   public String getStringOfValueAt(int row, int col) {
     double elem = matrix[row][col];
-    return "%8.2g".formatted(basicallyZero(elem) ? 0 : elem);
+    return "%8.2g".formatted(basicallyEqual(elem, 0) ? 0 : elem);
   }
 
   private void checkRowCountMatches(@NotNull Matrix other) {
@@ -275,6 +275,9 @@ public class Matrix {
   private void invertInPlace() {
     augmentInPlace();
     rowReduceInPlace();
+    for (int i = 0; i < getRowCount(); ++i) {
+      if (!basicallyEqual(matrix[i][i], 1)) throw new RuntimeException("matrix is not invertible");
+    }
     sliceInPlace(0, getRowCount(), getColumnCount() / 2, getColumnCount());
   }
 
@@ -314,7 +317,7 @@ public class Matrix {
       boolean foundNonZeroPivot = false;
       for (int col = curPivotCol; col < getColumnCount(); ++col) {
         for (int row = curPivotRow; row < getRowCount(); ++row) {
-          if (basicallyZero(matrix[row][col])) continue;
+          if (basicallyEqual(matrix[row][col], 0)) continue;
           switchRowsInPlace(curPivotRow, row);
           curPivotCol = col;
           foundNonZeroPivot = true;
@@ -350,7 +353,7 @@ public class Matrix {
    */
   private void makeElemZeroInPlace(int row, int col, int auxiliaryRow) {
     double elem = matrix[row][col];
-    if (basicallyZero(elem)) return;
+    if (basicallyEqual(elem, 0)) return;
 
     // make matrix[auxiliaryRow][col] == -elem, then add.
     multiplyRowInPlace(auxiliaryRow, -elem / matrix[auxiliaryRow][col]);
