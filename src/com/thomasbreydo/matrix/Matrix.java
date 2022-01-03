@@ -3,15 +3,14 @@ package com.thomasbreydo.matrix;
 import java.util.Arrays;
 
 public class Matrix {
-  private final double[][] matrix;
+  private double[][] matrix;
 
   /**
    * Initialize this {@code Matrix} with {@code matrix}.
    *
    * @param matrix initial values
-   * @throws IllegalArgumentException if {@code matrix} is degenerate (0 rows or 0 columns)
    */
-  public Matrix(double[][] matrix) throws IllegalArgumentException {
+  public Matrix(double[][] matrix) {
     if (matrix.length == 0 || matrix[0].length == 0)
       throw new IllegalArgumentException("rowCount and colCount must be positive");
     this.matrix = matrix;
@@ -22,9 +21,8 @@ public class Matrix {
    *
    * @param rowCount number of rows
    * @param colCount number of columns
-   * @throws IllegalArgumentException if {@code rowCount} or {@code colCount} are zero.
    */
-  public Matrix(int rowCount, int colCount) throws IllegalArgumentException {
+  public Matrix(int rowCount, int colCount) {
     this(new double[rowCount][colCount]);
   }
 
@@ -35,16 +33,34 @@ public class Matrix {
    * @param rowCount number of rows
    * @param colCount number of columns
    * @param fillValue value to fill with
-   * @throws IllegalArgumentException if {@code rowCount} or {@code colCount} are zero.
    */
-  public Matrix(int rowCount, int colCount, double fillValue) throws IllegalArgumentException {
+  public Matrix(int rowCount, int colCount, double fillValue) {
     this(rowCount, colCount);
     for (double[] row : matrix) Arrays.fill(row, fillValue);
+  }
+
+  public static void checkRowCountMatches(Matrix a, Matrix b) {
+    if (a.getRowCount() != b.getRowCount()) throw new IllegalArgumentException("row count differs");
+  }
+
+  public static void checkColumnCountMatches(Matrix a, Matrix b) {
+    if (a.getColumnCount() != b.getColumnCount())
+      throw new IllegalArgumentException("column count differs");
   }
 
   /** @return {@code true} if {@code a} is within {@code 1e-8} of zero. */
   private static boolean basicallyZero(double a) {
     return Math.abs(a) < 1e-8;
+  }
+
+  /**
+   * @return a new {@code rowCount x colCount} {@code Matrix} with ones along the diagonal and zeros
+   *     everywhere else
+   */
+  public static Matrix identity(int rowCount, int colCount) {
+    Matrix output = new Matrix(rowCount, colCount);
+    for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.setEntry(i, i, 1);
+    return output;
   }
 
   public double[][] getMatrix() {
@@ -83,12 +99,10 @@ public class Matrix {
    * Add this {@code Matrix} with {@code other}.
    *
    * @return the sum as a new {@code Matrix}
-   * @throws IllegalArgumentException if the dimensions of {@code other} don't match this {@code
-   *     Matrix}
    */
-  public Matrix plus(Matrix other) throws IllegalArgumentException {
-    if (other.getRowCount() != getRowCount() || other.getColumnCount() != getColumnCount())
-      throw new IllegalArgumentException("dimension mismatch");
+  public Matrix plus(Matrix other) {
+    checkRowCountMatches(this, other);
+    checkColumnCountMatches(this, other);
 
     double[][] output = cloneOfInternalArray();
     for (int row = 0; row < getRowCount(); ++row)
@@ -140,6 +154,37 @@ public class Matrix {
     return output;
   }
 
+  /**
+   * Augment this {@code Matrix} with {@code other}.
+   *
+   * @return the result as a new {@code Matrix}
+   */
+  public Matrix augment(Matrix other) {
+    Matrix output = new Matrix(cloneOfInternalArray());
+    output.augmentInPlace(other);
+    return output;
+  }
+
+  private void augmentInPlace() {
+    augmentInPlace(identity(getRowCount(), getRowCount()));
+  }
+
+  private void augmentInPlace(Matrix other) {
+    checkRowCountMatches(this, other);
+    double[][] newMatrix = new double[getRowCount()][getColumnCount() + other.getColumnCount()];
+    for (int row = 0; row < getRowCount(); ++row) {
+      System.arraycopy(getRow(row), 0, newMatrix[row], 0, getColumnCount());
+      System.arraycopy(other.getRow(row), 0, newMatrix[row], getRowCount(), other.getColumnCount());
+    }
+    matrix = newMatrix;
+  }
+
+  public Matrix invert() {
+    Matrix output = new Matrix(cloneOfInternalArray());
+    output.invertInPlace();
+    return output;
+  }
+
   @Override
   public String toString() {
     StringBuilder stringBuilder = new StringBuilder(10 * getRowCount() * getColumnCount());
@@ -160,6 +205,10 @@ public class Matrix {
     return "%8.2g".formatted(basicallyZero(elem) ? 0 : elem);
   }
 
+  private void invertInPlace() {
+    augmentInPlace();
+    rowReduceInPlace();
+  }
   // ############################################################
 
   //             Efficient, in-place row reduction.
