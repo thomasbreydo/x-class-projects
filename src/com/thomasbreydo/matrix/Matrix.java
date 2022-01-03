@@ -111,6 +111,10 @@ public class Matrix {
     return stringBuilder.toString();
   }
 
+  public Matrix copy() {
+    return new Matrix(cloneOfInternalArray());
+  }
+
   /**
    * Format {@code matrix[row][col]} as {@code %8.2g} for printing.
    *
@@ -204,15 +208,10 @@ public class Matrix {
    * @param other the {@code Matrix} to add
    * @return the sum as a new {@code Matrix}
    */
-  public Matrix plus(Matrix other) {
-    checkRowCountMatches(other);
-    checkColumnCountMatches(other);
-
-    double[][] output = cloneOfInternalArray();
-    for (int row = 0; row < getRowCount(); ++row)
-      for (int col = 0; col < getColumnCount(); ++col) output[row][col] += other.matrix[row][col];
-
-    return new Matrix(output);
+  public Matrix plus(@NotNull Matrix other) {
+    Matrix output = copy();
+    output.plusInPlace(other);
+    return output;
   }
 
   /**
@@ -236,12 +235,9 @@ public class Matrix {
    * @return the resulting {@code Matrix}.
    */
   public Matrix switchRows(int row1, int row2) {
-    double[][] output = cloneOfInternalArray();
-    for (int col = 0; col < getColumnCount(); ++col) {
-      output[row1][col] = matrix[row2][col];
-      output[row2][col] = matrix[row1][col];
-    }
-    return new Matrix(output);
+    Matrix output = copy();
+    output.switchRowsInPlace(row1, row2);
+    return output;
   }
 
   /**
@@ -265,7 +261,7 @@ public class Matrix {
    * @return a {@code Matrix} that equals the reduced row-echelon form of this {@code Matrix}
    */
   public Matrix rowReduce() {
-    Matrix output = new Matrix(cloneOfInternalArray());
+    Matrix output = copy();
     output.rowReduceInPlace();
     return output;
   }
@@ -276,7 +272,7 @@ public class Matrix {
    * @return the result as a new {@code Matrix}
    */
   public Matrix augment() {
-    Matrix output = new Matrix(cloneOfInternalArray());
+    Matrix output = copy();
     output.augmentInPlace();
     return output;
   }
@@ -287,8 +283,8 @@ public class Matrix {
    * @param other {@code Matrix} to put to the right of this {@code Matrix}
    * @return the result as a new {@code Matrix}
    */
-  public Matrix augment(Matrix other) {
-    Matrix output = new Matrix(cloneOfInternalArray());
+  public Matrix augment(@NotNull Matrix other) {
+    Matrix output = copy();
     output.augmentInPlace(other);
     return output;
   }
@@ -299,7 +295,7 @@ public class Matrix {
    * @return the inverted version of this {@code Matrix}
    */
   public Matrix invert() {
-    Matrix output = new Matrix(cloneOfInternalArray());
+    Matrix output = copy();
     output.invertInPlace();
     return output;
   }
@@ -317,7 +313,7 @@ public class Matrix {
     augmentInPlace(identity(getRowCount()));
   }
 
-  private void augmentInPlace(Matrix other) {
+  private void augmentInPlace(@NotNull Matrix other) {
     checkRowCountMatches(other);
     double[][] newMatrix = new double[getRowCount()][getColumnCount() + other.getColumnCount()];
     for (int row = 0; row < getRowCount(); ++row) {
@@ -337,7 +333,7 @@ public class Matrix {
    * @return a sliced version of this {@code Matrix}
    */
   public Matrix slice(int rowStart, int rowEnd, int colStart, int colEnd) {
-    Matrix output = new Matrix(cloneOfInternalArray());
+    Matrix output = copy();
     output.sliceInPlace(rowStart, rowEnd, colStart, colEnd);
     return output;
   }
@@ -350,12 +346,12 @@ public class Matrix {
     matrix = newMatrix;
   }
 
-  // ############################################################
+  // ######################################################################################
 
-  //             Efficient, in-place row reduction.
-  //                    © Thomas Breydo 2022
+  //                          Efficient, in-place row reduction
+  //                                 © Thomas Breydo 2022
 
-  // ############################################################
+  // ######################################################################################
 
   private void rowReduceInPlace() {
     int curPivotCol = 0;
@@ -374,8 +370,8 @@ public class Matrix {
       }
       if (!foundNonZeroPivot) return; // we're done (no more pivots)
 
-      // matrix[curPivotRow][curPivotCol] is the next pivot, let's zero out
-      // elements above/below it in the column.
+      // matrix[curPivotRow][curPivotCol] is the next pivot, let's zero out the
+      // elements above/below it in its column.
       for (int row = 0; row < getRowCount(); ++row) {
         if (row == curPivotRow) continue; // don't zero out the pivot
         makeElemZeroInPlace(row, curPivotCol, curPivotRow);
@@ -385,6 +381,8 @@ public class Matrix {
       ++curPivotCol;
     }
   }
+
+  // ######################################################################################
 
   private void switchRowsInPlace(int row1, int row2) {
     for (int col = 0; col < getColumnCount(); ++col) {
@@ -420,5 +418,13 @@ public class Matrix {
   /** Add {@code row1} to {@code row2} (updating {@code row2}). */
   private void addRowToRowInPlace(int row1, int row2) {
     for (int col = 0; col < getColumnCount(); col++) matrix[row2][col] += matrix[row1][col];
+  }
+
+  private void plusInPlace(@NotNull Matrix other) {
+    checkRowCountMatches(other);
+    checkColumnCountMatches(other);
+
+    for (int row = 0; row < getRowCount(); ++row)
+      for (int col = 0; col < getColumnCount(); ++col) matrix[row][col] += other.matrix[row][col];
   }
 }
