@@ -1,5 +1,7 @@
 package com.thomasbreydo.matrix;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 
 public class Matrix {
@@ -39,15 +41,6 @@ public class Matrix {
     for (double[] row : matrix) Arrays.fill(row, fillValue);
   }
 
-  public static void checkRowCountMatches(Matrix a, Matrix b) {
-    if (a.getRowCount() != b.getRowCount()) throw new IllegalArgumentException("row count differs");
-  }
-
-  public static void checkColumnCountMatches(Matrix a, Matrix b) {
-    if (a.getColumnCount() != b.getColumnCount())
-      throw new IllegalArgumentException("column count differs");
-  }
-
   /** @return {@code true} if {@code a} is within {@code 1e-8} of zero. */
   private static boolean basicallyZero(double a) {
     return Math.abs(a) < 1e-8;
@@ -61,6 +54,16 @@ public class Matrix {
     Matrix output = new Matrix(rowCount, colCount);
     for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.setEntry(i, i, 1);
     return output;
+  }
+
+  private void checkRowCountMatches(@NotNull Matrix other) {
+    if (getRowCount() != other.getRowCount())
+      throw new IllegalArgumentException("row count differs");
+  }
+
+  private void checkColumnCountMatches(@NotNull Matrix other) {
+    if (getColumnCount() != other.getColumnCount())
+      throw new IllegalArgumentException("column count differs");
   }
 
   public double[][] getMatrix() {
@@ -101,8 +104,8 @@ public class Matrix {
    * @return the sum as a new {@code Matrix}
    */
   public Matrix plus(Matrix other) {
-    checkRowCountMatches(this, other);
-    checkColumnCountMatches(this, other);
+    checkRowCountMatches(other);
+    checkColumnCountMatches(other);
 
     double[][] output = cloneOfInternalArray();
     for (int row = 0; row < getRowCount(); ++row)
@@ -155,6 +158,17 @@ public class Matrix {
   }
 
   /**
+   * Augment this {@code Matrix} with an identity matrix with the same row count.
+   *
+   * @return the result as a new {@code Matrix}
+   */
+  public Matrix augment() {
+    Matrix output = new Matrix(cloneOfInternalArray());
+    output.augmentInPlace();
+    return output;
+  }
+
+  /**
    * Augment this {@code Matrix} with {@code other}.
    *
    * @return the result as a new {@code Matrix}
@@ -170,7 +184,7 @@ public class Matrix {
   }
 
   private void augmentInPlace(Matrix other) {
-    checkRowCountMatches(this, other);
+    checkRowCountMatches(other);
     double[][] newMatrix = new double[getRowCount()][getColumnCount() + other.getColumnCount()];
     for (int row = 0; row < getRowCount(); ++row) {
       System.arraycopy(getRow(row), 0, newMatrix[row], 0, getColumnCount());
