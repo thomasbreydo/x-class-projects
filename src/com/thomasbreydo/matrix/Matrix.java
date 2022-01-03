@@ -61,6 +61,11 @@ public class Matrix {
     return output;
   }
 
+  /**
+   * Get the string representation of this {@code Matrix}.
+   *
+   * @return the string representation of this {@code Matrix}
+   */
   @Override
   public String toString() {
     StringBuilder stringBuilder = new StringBuilder(10 * getRowCount() * getColumnCount());
