@@ -29,12 +29,8 @@ public class MatrixTest {
   }
 
   @Test
-  public void testInvert() {
-    Matrix expected =
-        new Matrix(
-            new double[][] {
-              {1, 0, 0, 1, 0, 0}, {0, 1, 0, 0, 1.0 / 2.0, 0}, {0, 0, 1, 0, 0, 1.0 / 3.0}
-            });
+  public void testInvertInvertible() {
+    Matrix expected = new Matrix(new double[][] {{1, 0, 0}, {0, 1.0 / 2.0, 0}, {0, 0, 1.0 / 3.0}});
     Matrix matrix = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
     Matrix same = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
 
@@ -42,4 +38,15 @@ public class MatrixTest {
     assertEquals(expected, actual);
     assertEquals(same, matrix);
   }
+
+  //  @Test
+  //  public void testInvertNonInvertible() {
+  //    Matrix expected = new Matrix(new double[][] {{1, 0, 0}, {1.0 / 2.0, 0}, {0, 0, 1.0 / 3.0}});
+  //    Matrix matrix = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
+  //    Matrix same = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
+  //
+  //    Matrix actual = matrix.invert();
+  //    assertEquals(expected, actual);
+  //    assertEquals(same, matrix);
+  //  }
 }

@@ -115,6 +115,11 @@ public class Matrix {
     return matrix[row].clone();
   }
 
+  /**
+   * Get the number of rows in this {@code Matrix}.
+   *
+   * @return the number of rows in this {@code Matrix}
+   */
   public int getRowCount() {
     return matrix.length;
   }
@@ -128,18 +133,31 @@ public class Matrix {
     return matrix[0].length;
   }
 
+  /**
+   * Get the element at row {@code row} and column {@code column}.
+   *
+   * @param row row index of element
+   * @param column column index of element
+   * @return the element at row {@code row} and column {@code column}
+   */
   public double getValueAt(int row, int column) {
     return matrix[row][column];
   }
 
+  /**
+   * Set the element at row {@code row} and column {@code column} to {@code value}.
+   *
+   * @param row row index of element
+   * @param column column index of element
+   * @param value the new value for the element
+   */
   public void setEntry(int row, int column, double value) {
     matrix[row][column] = value;
   }
 
   private double[][] cloneOfInternalArray() {
     double[][] output = new double[getRowCount()][getColumnCount()];
-    for (int row = 0; row < getRowCount(); ++row)
-      output[row] = getRow(row);
+    for (int row = 0; row < getRowCount(); ++row) output[row] = getRow(row);
     return output;
   }
 
@@ -204,7 +222,11 @@ public class Matrix {
     return new Matrix(output);
   }
 
-  /** @return a {@code Matrix} that equals the reduced row-echelon form of this {@code Matrix} */
+  /**
+   * Get a {@code Matrix} that equals the reduced row-echelon form of this {@code Matrix}.
+   *
+   * @return a {@code Matrix} that equals the reduced row-echelon form of this {@code Matrix}
+   */
   public Matrix rowReduce() {
     Matrix output = new Matrix(cloneOfInternalArray());
     output.rowReduceInPlace();
@@ -234,6 +256,11 @@ public class Matrix {
     return output;
   }
 
+  /**
+   * Get the inverted version of this {@code Matrix}.
+   *
+   * @return the inverted version of this {@code Matrix}
+   */
   public Matrix invert() {
     Matrix output = new Matrix(cloneOfInternalArray());
     output.invertInPlace();
@@ -243,6 +270,7 @@ public class Matrix {
   private void invertInPlace() {
     augmentInPlace();
     rowReduceInPlace();
+    sliceInPlace(0, getRowCount(), getColumnCount() / 2, getColumnCount());
   }
 
   private void augmentInPlace() {
@@ -256,6 +284,14 @@ public class Matrix {
       System.arraycopy(matrix[row], 0, newMatrix[row], 0, getColumnCount());
       System.arraycopy(other.matrix[row], 0, newMatrix[row], getRowCount(), other.getColumnCount());
     }
+    matrix = newMatrix;
+  }
+
+  private void sliceInPlace(int rowStart, int rowEnd, int colStart, int colEnd) {
+    double[][] newMatrix = new double[rowEnd - rowStart][colEnd - colStart];
+    for (int curRow = rowStart, newRow = 0; curRow < rowEnd; ++curRow, ++newRow)
+      for (int curCol = colStart, newCol = 0; curCol < colEnd; ++curCol, ++newCol)
+        newMatrix[newRow][newCol] = matrix[curRow][curCol];
     matrix = newMatrix;
   }
 
