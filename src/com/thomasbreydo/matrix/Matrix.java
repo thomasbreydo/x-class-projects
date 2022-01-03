@@ -13,7 +13,7 @@ public class Matrix {
    *
    * @param matrix initial values
    */
-  public Matrix(double[][] matrix) {
+  public Matrix(double @NotNull [] @NotNull [] matrix) {
     if (matrix.length == 0 || matrix[0].length == 0)
       throw new IllegalArgumentException("rowCount and colCount must be positive");
     this.matrix = matrix;
@@ -55,7 +55,7 @@ public class Matrix {
    * @return a new {@code n x n} {@code Matrix} with ones along the diagonal and zeros everywhere
    *     else
    */
-  public static Matrix identity(int n) {
+  public static @NotNull Matrix identity(int n) {
     return identity(n, n);
   }
 
@@ -68,7 +68,7 @@ public class Matrix {
    * @return a new {@code rowCount x colCount} {@code Matrix} with ones along the diagonal and zeros
    *     everywhere else
    */
-  public static Matrix identity(int rowCount, int colCount) {
+  public static @NotNull Matrix identity(int rowCount, int colCount) {
     Matrix output = new Matrix(rowCount, colCount);
     for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.matrix[i][i] = 1;
     return output;
@@ -78,7 +78,7 @@ public class Matrix {
    * Check if this {@code Matrix} equals {@code o}.
    *
    * @param o the object to compare to
-   * @return {@code true} if this {@code Matrix} equals {@code o}.
+   * @return {@code true} if this {@code Matrix} equals {@code o}
    */
   @Override
   public boolean equals(Object o) {
@@ -196,7 +196,7 @@ public class Matrix {
     matrix[row][column] = value;
   }
 
-  private double[][] cloneOfInternalArray() {
+  private double @NotNull [] @NotNull [] cloneOfInternalArray() {
     double[][] output = new double[getRowCount()][getColumnCount()];
     for (int row = 0; row < getRowCount(); ++row) output[row] = getRow(row);
     return output;
