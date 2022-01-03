@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+/** Store a matrix and perform linear-algebraic operations. */
 public class Matrix {
   private double[][] matrix;
 
@@ -47,13 +48,42 @@ public class Matrix {
   }
 
   /**
+   * Create a new {@code Matrix} with ones along the diagonal and zeros everywhere else.
+   *
+   * @param rowCount number of rows for the new {@code Matrix}
+   * @param colCount number of rows for the new {@code Matrix}
    * @return a new {@code rowCount x colCount} {@code Matrix} with ones along the diagonal and zeros
    *     everywhere else
    */
   public static Matrix identity(int rowCount, int colCount) {
     Matrix output = new Matrix(rowCount, colCount);
-    for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.setEntry(i, i, 1);
+    for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.matrix[i][i] = 1;
     return output;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder stringBuilder = new StringBuilder(10 * getRowCount() * getColumnCount());
+    for (int row = 0; row < getRowCount(); ++row) {
+      for (int col = 0; col < getColumnCount(); ++col) {
+        stringBuilder.append(getStringOfValueAt(row, col));
+        stringBuilder.append(' ');
+      }
+      stringBuilder.append('\n');
+    }
+    return stringBuilder.toString();
+  }
+
+  /**
+   * Format {@code matrix[row][col]} as {@code %8.2g} for printing.
+   *
+   * @param row row index of element to format
+   * @param col col index of element to format
+   * @return {@code matrix[row][col]} as {@code %8.2g}
+   */
+  public String getStringOfValueAt(int row, int col) {
+    double elem = matrix[row][col];
+    return "%8.2g".formatted(basicallyZero(elem) ? 0 : elem);
   }
 
   private void checkRowCountMatches(@NotNull Matrix other) {
@@ -66,18 +96,34 @@ public class Matrix {
       throw new IllegalArgumentException("column count differs");
   }
 
+  /**
+   * Get a copy of the underlying 2D array.
+   *
+   * @return a copy of the underlying 2D array
+   */
   public double[][] getMatrix() {
-    return matrix;
+    return cloneOfInternalArray();
   }
 
+  /**
+   * Get a copy of the row at index {@code row}.
+   *
+   * @param row index of row to access
+   * @return a copy of the row at index {@code row}
+   */
   public double[] getRow(int row) {
-    return matrix[row];
+    return matrix[row].clone();
   }
 
   public int getRowCount() {
     return matrix.length;
   }
 
+  /**
+   * Get the number of columns in this {@code Matrix}.
+   *
+   * @return the number of columns in this {@code Matrix}
+   */
   public int getColumnCount() {
     return matrix[0].length;
   }
@@ -92,15 +138,15 @@ public class Matrix {
 
   private double[][] cloneOfInternalArray() {
     double[][] output = new double[getRowCount()][getColumnCount()];
-    for (int row = 0; row < getRowCount(); ++row) {
-      System.arraycopy(matrix[row], 0, output[row], 0, getColumnCount());
-    }
+    for (int row = 0; row < getRowCount(); ++row)
+      output[row] = getRow(row);
     return output;
   }
 
   /**
    * Add this {@code Matrix} with {@code other}.
    *
+   * @param other the {@code Matrix} to add
    * @return the sum as a new {@code Matrix}
    */
   public Matrix plus(Matrix other) {
@@ -109,15 +155,20 @@ public class Matrix {
 
     double[][] output = cloneOfInternalArray();
     for (int row = 0; row < getRowCount(); ++row)
-      for (int col = 0; col < getColumnCount(); ++col)
-        output[row][col] += other.getValueAt(row, col);
+      for (int col = 0; col < getColumnCount(); ++col) output[row][col] += other.matrix[row][col];
 
     return new Matrix(output);
   }
 
-  /** @return the product of row {@code row} of this {@code Matrix} by {@code scalar}. */
+  /**
+   * Multiply {@code row} by {@code scalar}.
+   *
+   * @param scalar scalar by which to multiply
+   * @param row index of row whose elements to modify
+   * @return the product of row {@code row} of this {@code Matrix} by {@code scalar}.
+   */
   public double[] scalarTimesRow(double scalar, int row) {
-    double[] output = getRow(row).clone();
+    double[] output = getRow(row);
     for (int col = 0; col < getColumnCount(); ++col) output[col] *= scalar;
     return output;
   }
@@ -132,8 +183,8 @@ public class Matrix {
   public Matrix switchRows(int row1, int row2) {
     double[][] output = cloneOfInternalArray();
     for (int col = 0; col < getColumnCount(); ++col) {
-      output[row1][col] = getValueAt(row2, col);
-      output[row2][col] = getValueAt(row1, col);
+      output[row1][col] = matrix[row2][col];
+      output[row2][col] = matrix[row1][col];
     }
     return new Matrix(output);
   }
@@ -141,6 +192,9 @@ public class Matrix {
   /**
    * Linear combine two rows.
    *
+   * @param scalar scalar by which to multiply elements of {@code sourceRow} before adding
+   * @param sourceRow index of row from which to take elements
+   * @param destRow index of row to modify
    * @return a {@code Matrix} where {@code destRow := destRow + (scalar * sourceRow)}
    */
   public Matrix linearCombRows(double scalar, int sourceRow, int destRow) {
@@ -169,14 +223,26 @@ public class Matrix {
   }
 
   /**
-   * Augment this {@code Matrix} with {@code other}.
+   * Augment this {@code Matrix} by {@code other}.
    *
+   * @param other {@code Matrix} to put to the right of this {@code Matrix}
    * @return the result as a new {@code Matrix}
    */
   public Matrix augment(Matrix other) {
     Matrix output = new Matrix(cloneOfInternalArray());
     output.augmentInPlace(other);
     return output;
+  }
+
+  public Matrix invert() {
+    Matrix output = new Matrix(cloneOfInternalArray());
+    output.invertInPlace();
+    return output;
+  }
+
+  private void invertInPlace() {
+    augmentInPlace();
+    rowReduceInPlace();
   }
 
   private void augmentInPlace() {
@@ -187,42 +253,12 @@ public class Matrix {
     checkRowCountMatches(other);
     double[][] newMatrix = new double[getRowCount()][getColumnCount() + other.getColumnCount()];
     for (int row = 0; row < getRowCount(); ++row) {
-      System.arraycopy(getRow(row), 0, newMatrix[row], 0, getColumnCount());
-      System.arraycopy(other.getRow(row), 0, newMatrix[row], getRowCount(), other.getColumnCount());
+      System.arraycopy(matrix[row], 0, newMatrix[row], 0, getColumnCount());
+      System.arraycopy(other.matrix[row], 0, newMatrix[row], getRowCount(), other.getColumnCount());
     }
     matrix = newMatrix;
   }
 
-  public Matrix invert() {
-    Matrix output = new Matrix(cloneOfInternalArray());
-    output.invertInPlace();
-    return output;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder stringBuilder = new StringBuilder(10 * getRowCount() * getColumnCount());
-    for (int row = 0; row < getRowCount(); ++row) {
-      for (int col = 0; col < getColumnCount(); ++col) {
-        stringBuilder.append(getStringOfValueAt(row, col));
-        stringBuilder.append(' ');
-      }
-      stringBuilder.append('\n');
-    }
-    System.out.println();
-    return stringBuilder.toString();
-  }
-
-  /** Format {@code getValueAt(row, col)} as {@code %8.2g} for printing. */
-  public String getStringOfValueAt(int row, int col) {
-    double elem = getValueAt(row, col);
-    return "%8.2g".formatted(basicallyZero(elem) ? 0 : elem);
-  }
-
-  private void invertInPlace() {
-    augmentInPlace();
-    rowReduceInPlace();
-  }
   // ############################################################
 
   //             Efficient, in-place row reduction.
@@ -237,7 +273,7 @@ public class Matrix {
       boolean foundNonZeroPivot = false;
       for (int col = curPivotCol; col < getColumnCount(); ++col) {
         for (int row = curPivotRow; row < getRowCount(); ++row) {
-          if (basicallyZero(getValueAt(row, col))) continue;
+          if (basicallyZero(matrix[row][col])) continue;
           switchRowsInPlace(curPivotRow, row);
           curPivotCol = col;
           foundNonZeroPivot = true;
@@ -254,7 +290,7 @@ public class Matrix {
         makeElemZeroInPlace(row, curPivotCol, curPivotRow);
       }
 
-      divideRowInPlace(curPivotRow, getValueAt(curPivotRow, curPivotCol)); // make pivot 1
+      divideRowInPlace(curPivotRow, matrix[curPivotRow][curPivotCol]); // make pivot 1
       ++curPivotCol;
     }
   }
@@ -268,15 +304,15 @@ public class Matrix {
   }
 
   /**
-   * Ensure {@code getValueAt(row, col)} is zero by combining {@code row} with {@code auxiliaryRow}
-   * if not yet zero.
+   * Ensure {@code matrix[row][col]} is zero by combining {@code row} with {@code auxiliaryRow} if
+   * not yet zero.
    */
   private void makeElemZeroInPlace(int row, int col, int auxiliaryRow) {
-    double elem = getValueAt(row, col);
+    double elem = matrix[row][col];
     if (basicallyZero(elem)) return;
 
     // make matrix[auxiliaryRow][col] == -elem, then add.
-    multiplyRowInPlace(auxiliaryRow, -elem / getValueAt(auxiliaryRow, col));
+    multiplyRowInPlace(auxiliaryRow, -elem / matrix[auxiliaryRow][col]);
     addRowToRowInPlace(auxiliaryRow, row);
   }
 

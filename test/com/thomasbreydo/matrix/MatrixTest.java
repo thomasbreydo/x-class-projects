@@ -21,8 +21,11 @@ public class MatrixTest {
   public void testRowReduce() {
     Matrix expected = new Matrix(new double[][] {{1, 0, 7.0 / 3.0}, {0, 1, -1.0 / 3.0}, {0, 0, 0}});
     Matrix matrix = new Matrix(new double[][] {{0, 9, -3}, {1, 1, 2}, {3, 0, 7}});
+    Matrix same = new Matrix(new double[][] {{0, 9, -3}, {1, 1, 2}, {3, 0, 7}});
+
     Matrix actual = matrix.rowReduce();
     assertEquals(expected, actual);
+    assertEquals(same, matrix);
   }
 
   @Test
@@ -33,7 +36,10 @@ public class MatrixTest {
               {1, 0, 0, 1, 0, 0}, {0, 1, 0, 0, 1.0 / 2.0, 0}, {0, 0, 1, 0, 0, 1.0 / 3.0}
             });
     Matrix matrix = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
+    Matrix same = new Matrix(new double[][] {{1, 0, 0}, {0, 2, 0}, {0, 0, 3}});
+
     Matrix actual = matrix.invert();
     assertEquals(expected, actual);
+    assertEquals(same, matrix);
   }
 }
