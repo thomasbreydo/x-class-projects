@@ -48,7 +48,20 @@ public class Matrix {
   }
 
   /**
-   * Create a new {@code Matrix} with ones along the diagonal and zeros everywhere else.
+   * Create a new {@code n x n} {@code Matrix} with ones along the diagonal and zeros everywhere
+   * else.
+   *
+   * @param n number of rows and number of columns for the new {@code Matrix}
+   * @return a new {@code n x n} {@code Matrix} with ones along the diagonal and zeros everywhere
+   *     else
+   */
+  public static Matrix identity(int n) {
+    return identity(n, n);
+  }
+
+  /**
+   * Create a new {@code rowCount x colCount} {@code Matrix} with ones along the diagonal and zeros
+   * everywhere else.
    *
    * @param rowCount number of rows for the new {@code Matrix}
    * @param colCount number of rows for the new {@code Matrix}
@@ -59,6 +72,25 @@ public class Matrix {
     Matrix output = new Matrix(rowCount, colCount);
     for (int i = 0; i < Math.min(rowCount, colCount); ++i) output.matrix[i][i] = 1;
     return output;
+  }
+
+  /**
+   * Check if this {@code Matrix} equals {@code o}.
+   *
+   * @param o the object to compare to
+   * @return {@code true} if this {@code Matrix} equals {@code o}.
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Matrix other = (Matrix) o;
+    if (getRowCount() != other.getRowCount()) return false;
+    if (getColumnCount() != other.getColumnCount()) return false;
+    for (int row = 0; row < getRowCount(); ++row)
+      for (int col = 0; col < getColumnCount(); ++col)
+        if (!basicallyEqual(matrix[row][col], other.matrix[row][col])) return false;
+    return true;
   }
 
   /**
@@ -275,14 +307,14 @@ public class Matrix {
   private void invertInPlace() {
     augmentInPlace();
     rowReduceInPlace();
-    for (int i = 0; i < getRowCount(); ++i) {
-      if (!basicallyEqual(matrix[i][i], 1)) throw new RuntimeException("matrix is not invertible");
-    }
+    Matrix leftHalf = slice(0, getRowCount(), 0, getRowCount());
+    if (!leftHalf.equals(identity(getRowCount())))
+      throw new RuntimeException("matrix is not invertible");
     sliceInPlace(0, getRowCount(), getColumnCount() / 2, getColumnCount());
   }
 
   private void augmentInPlace() {
-    augmentInPlace(identity(getRowCount(), getRowCount()));
+    augmentInPlace(identity(getRowCount()));
   }
 
   private void augmentInPlace(Matrix other) {
@@ -293,6 +325,21 @@ public class Matrix {
       System.arraycopy(other.matrix[row], 0, newMatrix[row], getRowCount(), other.getColumnCount());
     }
     matrix = newMatrix;
+  }
+
+  /**
+   * Return a sliced version of this {@code Matrix}.
+   *
+   * @param rowStart index of first row to include
+   * @param rowEnd index of first row to exclude
+   * @param colStart index of first column to include
+   * @param colEnd index of first row to exclude
+   * @return a sliced version of this {@code Matrix}
+   */
+  public Matrix slice(int rowStart, int rowEnd, int colStart, int colEnd) {
+    Matrix output = new Matrix(cloneOfInternalArray());
+    output.sliceInPlace(rowStart, rowEnd, colStart, colEnd);
+    return output;
   }
 
   private void sliceInPlace(int rowStart, int rowEnd, int colStart, int colEnd) {
