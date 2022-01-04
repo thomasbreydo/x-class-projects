@@ -112,7 +112,7 @@ public class Matrix {
   }
 
   public Matrix copy() {
-    return new Matrix(cloneOfInternalArray());
+    return new Matrix(getMatrix());
   }
 
   /**
@@ -142,8 +142,10 @@ public class Matrix {
    *
    * @return a copy of the underlying 2D array
    */
-  public double[][] getMatrix() {
-    return cloneOfInternalArray();
+  public double @NotNull [] @NotNull [] getMatrix() {
+    double[][] output = new double[getRowCount()][getColumnCount()];
+    for (int row = 0; row < getRowCount(); ++row) output[row] = getRow(row);
+    return output;
   }
 
   /**
@@ -194,12 +196,6 @@ public class Matrix {
    */
   public void setEntry(int row, int column, double value) {
     matrix[row][column] = value;
-  }
-
-  private double @NotNull [] @NotNull [] cloneOfInternalArray() {
-    double[][] output = new double[getRowCount()][getColumnCount()];
-    for (int row = 0; row < getRowCount(); ++row) output[row] = getRow(row);
-    return output;
   }
 
   /**
