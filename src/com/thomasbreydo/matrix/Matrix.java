@@ -149,6 +149,17 @@ public class Matrix {
   }
 
   /**
+   * Get a copy of the column at index {@code column}.
+   *
+   * @param column index of column to access
+   * @return a copy of the column at index {@code column}
+   */
+  public double[] getColumn(int column) {
+    double[] output = new double[getRowCount()];
+    for (int row = 0; row < getRowCount(); ++row) output[row] = matrix[row][column];
+    return output;
+  }
+  /**
    * Get a copy of the row at index {@code row}.
    *
    * @param row index of row to access
