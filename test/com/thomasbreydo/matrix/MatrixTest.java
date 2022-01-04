@@ -7,7 +7,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
 public class MatrixTest {
-  static final double DELTA = 1e-5; // tolerance for float checks
+  static final double DELTA = 1e-8; // tolerance for float checks
 
   public static void assertEquals(Matrix expected, Matrix actual) {
     Assert.assertEquals("row count differs", expected.getRowCount(), actual.getRowCount());
@@ -136,6 +136,26 @@ public class MatrixTest {
     assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, 1, 2));
     assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, -1, -1));
     assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, 2, 2));
+    assertEquals(m1copy, m1);
+  }
+
+  @Test
+  public void testGetValueAt() {
+    Matrix m1 =
+        new Matrix(
+            new double[][] {
+              {0, -1},
+              {4, 0.3},
+            });
+    Matrix m1copy = m1.copy();
+    Assert.assertEquals(0, m1.getValueAt(0, 0), DELTA);
+    Assert.assertEquals(4, m1.getValueAt(1, 0), DELTA);
+    Assert.assertEquals(-1, m1.getValueAt(0, 1), DELTA);
+    Assert.assertEquals(0.3, m1.getValueAt(1, 1), DELTA);
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(-1, 0));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(2, 1));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(0, -1));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(1, -2));
     assertEquals(m1copy, m1);
   }
 }
