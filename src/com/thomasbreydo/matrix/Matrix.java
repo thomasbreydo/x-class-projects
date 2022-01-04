@@ -314,7 +314,8 @@ public class Matrix {
     double[][] newMatrix = new double[getRowCount()][getColumnCount() + other.getColumnCount()];
     for (int row = 0; row < getRowCount(); ++row) {
       System.arraycopy(matrix[row], 0, newMatrix[row], 0, getColumnCount());
-      System.arraycopy(other.matrix[row], 0, newMatrix[row], getRowCount(), other.getColumnCount());
+      System.arraycopy(
+          other.matrix[row], 0, newMatrix[row], getColumnCount(), other.getColumnCount());
     }
     matrix = newMatrix;
   }

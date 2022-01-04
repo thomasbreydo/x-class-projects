@@ -161,4 +161,36 @@ public class MatrixTest {
 
     assertMatrixEquals(expected, m2);
   }
+
+  @Test
+  public void testAugment() {
+    Matrix expected1 =
+        new Matrix(
+            new double[][] {
+              {0, 0, 0, 1, 0},
+              {0, 0, 0, 0, 1},
+            });
+    Matrix m1 = new Matrix(2, 3);
+
+    assertMatrixEquals(expected1, m1.augment());
+
+    Matrix expected2 =
+        new Matrix(
+            new double[][] {
+              {0, 0, 0, 3, 1},
+              {0, 0, 0, 4, 5},
+            });
+    Matrix m2 =
+        new Matrix(
+            new double[][] {
+              {3, 1},
+              {4, 5},
+            });
+
+    assertMatrixEquals(expected2, m1.augment(m2));
+
+    assertThrows(RuntimeException.class, () -> m1.augment(new Matrix(1, 3)));
+    assertThrows(RuntimeException.class, () -> m1.augment(new Matrix(3, 2)));
+    assertThrows(RuntimeException.class, () -> m1.augment(new Matrix(3, 3)));
+  }
 }
