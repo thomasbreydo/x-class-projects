@@ -27,6 +27,10 @@ public class PolyInterpolationApp {
 
     System.out.print("\nP(X) = ");
     Polynomial p = new Polynomial(m.rowReduce().getColumn(degree + 1));
-    System.out.println(p);
+    if (degree == 0) {
+      System.out.println(p.getCoefficientAtTerm(0)); // avoid p(x) = 0 bug
+    } else {
+      System.out.println(p);
+    }
   }
 }
