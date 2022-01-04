@@ -249,10 +249,10 @@ public class Matrix {
    * @return a {@code Matrix} where {@code destRow := destRow + (scalar * sourceRow)}
    */
   public Matrix linearCombRows(double scalar, int sourceRow, int destRow) {
-    double[][] output = cloneOfInternalArray();
+    Matrix output = copy();
     for (int col = 0; col < getColumnCount(); ++col)
-      output[destRow][col] += scalar * output[sourceRow][destRow];
-    return new Matrix(output);
+      output.matrix[destRow][col] += scalar * matrix[sourceRow][col];
+    return output;
   }
 
   /**

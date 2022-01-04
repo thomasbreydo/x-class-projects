@@ -107,4 +107,35 @@ public class MatrixTest {
     assertThrows(IndexOutOfBoundsException.class, () -> m1.scalarTimesRow(1, -1));
     assertEquals(m1copy, m1);
   }
+
+  @Test
+  public void testLinearCombRows() {
+    Matrix expected1 =
+        new Matrix(
+            new double[][] {
+              {0, -1},
+              {4, 1.8},
+            });
+    Matrix expected2 =
+        new Matrix(
+            new double[][] {
+              {40, 2},
+              {4, 0.3},
+            });
+    Matrix m1 =
+        new Matrix(
+            new double[][] {
+              {0, -1},
+              {4, 0.3},
+            });
+    Matrix m1copy = m1.copy();
+
+    assertEquals(expected1, m1.linearCombRows(-1.5, 0, 1));
+    assertEquals(expected2, m1.linearCombRows(10, 1, 0));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, 1, -1));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, 1, 2));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, -1, -1));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.linearCombRows(0.5, 2, 2));
+    assertEquals(m1copy, m1);
+  }
 }
