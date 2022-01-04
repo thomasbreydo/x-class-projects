@@ -140,22 +140,27 @@ public class MatrixTest {
   }
 
   @Test
-  public void testGetValueAt() {
-    Matrix m1 =
+  public void testSetEntry() {
+    Matrix m1 = new Matrix(1, 1);
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.setEntry(0, -1, 0.5));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.setEntry(1, -1, 0.5));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.setEntry(-1, 2, 0.5));
+    m1.setEntry(0, 0, -3);
+    Assert.assertEquals(-3, m1.getValueAt(0, 0), DELTA);
+
+    Matrix expected =
         new Matrix(
             new double[][] {
-              {0, -1},
-              {4, 0.3},
+              {3.14, 15},
+              {92.6, 5},
             });
-    Matrix m1copy = m1.copy();
-    Assert.assertEquals(0, m1.getValueAt(0, 0), DELTA);
-    Assert.assertEquals(4, m1.getValueAt(1, 0), DELTA);
-    Assert.assertEquals(-1, m1.getValueAt(0, 1), DELTA);
-    Assert.assertEquals(0.3, m1.getValueAt(1, 1), DELTA);
-    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(-1, 0));
-    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(2, 1));
-    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(0, -1));
-    assertThrows(IndexOutOfBoundsException.class, () -> m1.getValueAt(1, -2));
-    assertEquals(m1copy, m1);
+
+    Matrix m2 = new Matrix(expected.getRowCount(), expected.getColumnCount());
+    m2.setEntry(0, 0, 3.14);
+    m2.setEntry(0, 1, 15);
+    m2.setEntry(1, 0, 92.6);
+    m2.setEntry(1, 1, 5);
+
+    assertEquals(expected, m2);
   }
 }
