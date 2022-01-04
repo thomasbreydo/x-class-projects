@@ -4,8 +4,9 @@ public class MatrixApp {
   public static void main(String[] args) {
     double[][] array2d =
         new double[][] {
-          {1, 3},
-          {2, 6},
+          {1, 0, 0},
+          {0, 2, 0},
+          {0, 0, 3},
         };
 
     Matrix original = new Matrix(array2d);
@@ -15,8 +16,5 @@ public class MatrixApp {
     Matrix inverted = original.invert();
     System.out.println("Inverted:");
     System.out.println(inverted);
-
-    System.err.println(original.augment());
-    System.err.println(original.augment().rowReduce());
   }
 }
