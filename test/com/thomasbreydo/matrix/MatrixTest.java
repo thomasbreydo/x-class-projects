@@ -90,4 +90,21 @@ public class MatrixTest {
     assertEquals(expected, m1.switchRows(0, 1));
     assertThrows(IndexOutOfBoundsException.class, () -> m1.switchRows(1, 2));
   }
+
+  @Test
+  public void testScalarTimesRow() {
+    Matrix m1 =
+        new Matrix(
+            new double[][] {
+              {0, -1},
+              {4, 0.3},
+            });
+    Matrix m1copy = m1.copy();
+    Assert.assertArrayEquals(new double[] {0, 0}, m1.scalarTimesRow(0, 0), DELTA);
+    Assert.assertArrayEquals(new double[] {0, 1}, m1.scalarTimesRow(-1, 0), DELTA);
+    Assert.assertArrayEquals(new double[] {1.2, 0.09}, m1.scalarTimesRow(0.3, 1), DELTA);
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.scalarTimesRow(0, 2));
+    assertThrows(IndexOutOfBoundsException.class, () -> m1.scalarTimesRow(1, -1));
+    assertEquals(m1copy, m1);
+  }
 }
