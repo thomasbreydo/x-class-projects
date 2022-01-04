@@ -8,7 +8,11 @@
 
 - View my [unit tests](test/com/thomasbreydo/riemann).
 
-### 2. Matrices
+### 2. Projectile motion
+
+- View my [source code](src/com/thomasbreydo/projectile)
+
+### 3. Matrices
 
 - View my [source code](src/com/thomasbreydo/matrix).
 
