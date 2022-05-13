@@ -1,11 +1,11 @@
 package com.thomasbreydo.physics;
 
 public class FreeBody {
-  private final double mass;
-  private final Vector2D velocity;
-  private Vector2D position;
-  private Vector2D acceleration;
-  private Vector2D netForce;
+  protected final double mass;
+  protected final Vector2D velocity;
+  protected Vector2D position;
+  protected Vector2D acceleration;
+  protected Vector2D netForce;
 
   public FreeBody(Vector2D position, Vector2D velocity, double mass) {
     this.position = position;
