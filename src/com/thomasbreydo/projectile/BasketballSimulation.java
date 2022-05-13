@@ -21,12 +21,16 @@ public class BasketballSimulation extends AbstractSimulation {
   static final int BACKBOARD_HEIGHT = 3;
   static final int RIM_LENGTH = 1;
   static final double EPS = 1;
+  static final double DELTA_TIME = 0.001; // (s)
+  static final double AIR_PRESSURE = 1.225; // at sea level, 15ºC (kg/m³)
   static boolean bounced;
   PlotFrame plotFrame = new PlotFrame("x", "y", "PlotGraph Simulation");
   Trail rim, hoopBase, backboard;
   Particle2D ball;
-  static final double DELTA_TIME = 0.1; // (s)
-  static final double AIR_PRESSURE = 1.225; // at sea level, 15ºC (kg/m³)
+
+  public static void main(String[] args) {
+    SimulationControl.createApp(new BasketballSimulation());
+  }
 
   boolean shouldBounce() {
     if (bounced) return false;
@@ -46,14 +50,6 @@ public class BasketballSimulation extends AbstractSimulation {
   }
 
   @Override
-  public void reset() {
-    control.setValue("Radius of ball (m)", 0.035);
-    control.setValue("Mass of ball (kg)", 0.14);
-    control.setValue("Angle (degrees)", 75);
-    control.setValue("Speed (m/s)", 24.5);
-  }
-
-  @Override
   public void initialize() {
     plotFrame.setPreferredMinMax(0, (DIST_TO_HOOP * 3) >> 1, 0, 35);
     plotFrame.setAutoscaleX(false);
@@ -62,8 +58,6 @@ public class BasketballSimulation extends AbstractSimulation {
     plotFrame.setVisible(true);
     plotFrame.setDefaultCloseOperation(PlotFrame.EXIT_ON_CLOSE);
     plotFrame.clearDrawables();
-
-    bounced = false;
 
     double radius = control.getDouble("Radius of ball (m)");
     double mass = control.getDouble("Mass of ball (kg)");
@@ -77,8 +71,7 @@ public class BasketballSimulation extends AbstractSimulation {
     rim = new Trail();
     backboard = new Trail();
 
-    for (Trail drawable : new Trail[]{rim, hoopBase, backboard})
-      plotFrame.addDrawable(drawable);
+    for (Trail drawable : new Trail[] {rim, hoopBase, backboard}) plotFrame.addDrawable(drawable);
 
     hoopBase.setStroke(new BasicStroke(2));
     hoopBase.color = Color.BLACK;
@@ -96,7 +89,11 @@ public class BasketballSimulation extends AbstractSimulation {
     backboard.addPoint(DIST_TO_HOOP, HOOP_HEIGHT + BACKBOARD_HEIGHT);
   }
 
-  public static void main(String[] args) {
-    SimulationControl.createApp(new BasketballSimulation());
+  @Override
+  public void reset() {
+    control.setValue("Radius of ball (m)", 0.035);
+    control.setValue("Mass of ball (kg)", 0.14);
+    control.setValue("Angle (degrees)", 75);
+    control.setValue("Speed (m/s)", 24.5);
   }
 }
