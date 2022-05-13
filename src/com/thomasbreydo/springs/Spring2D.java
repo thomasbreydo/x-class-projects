@@ -1,5 +1,7 @@
 package com.thomasbreydo.springs;
 
+import com.thomasbreydo.physics.FreeBody;
+import com.thomasbreydo.physics.Vector2D;
 import org.opensourcephysics.display.Circle;
 import org.opensourcephysics.display.Drawable;
 import org.opensourcephysics.display.DrawingPanel;

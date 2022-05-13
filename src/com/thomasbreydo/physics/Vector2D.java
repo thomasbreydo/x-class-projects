@@ -1,4 +1,4 @@
-package com.thomasbreydo.springs;
+package com.thomasbreydo.physics;
 
 public class Vector2D {
   private double x;

@@ -1,5 +1,6 @@
 package com.thomasbreydo.springs;
 
+import com.thomasbreydo.physics.Vector2D;
 import org.opensourcephysics.controls.AbstractSimulation;
 import org.opensourcephysics.controls.SimulationControl;
 import org.opensourcephysics.frames.PlotFrame;
