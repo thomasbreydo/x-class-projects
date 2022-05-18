@@ -2,10 +2,7 @@ package com.thomasbreydo.orbitals;
 
 import com.thomasbreydo.physics.FreeBody;
 import com.thomasbreydo.physics.Vector2D;
-import org.opensourcephysics.display.Circle;
-import org.opensourcephysics.display.Drawable;
-import org.opensourcephysics.display.DrawingPanel;
-import org.opensourcephysics.display.Trail;
+import org.opensourcephysics.display.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,12 +11,13 @@ public class CelestialBody extends FreeBody implements Drawable {
   private static final double G = 6.673889E-11;
   Circle circle;
   boolean showTrail;
+  boolean showForces;
   Trail trail;
   CelestialSystem system;
   ArrayList<Vector2D> forces;
 
   CelestialBody(Vector2D position, Vector2D velocity, double mass, CelestialSystem system) {
-    this(position, velocity, mass, system, true);
+    this(position, velocity, mass, system, true, true);
   }
 
   CelestialBody(
@@ -27,10 +25,12 @@ public class CelestialBody extends FreeBody implements Drawable {
       Vector2D velocity,
       double mass,
       CelestialSystem system,
-      boolean showTrail) {
+      boolean showTrail,
+      boolean showForces) {
     super(position, velocity, mass);
     this.system = system;
     this.showTrail = showTrail;
+    this.showForces = showForces;
 
     circle = new Circle(this.getX(), this.getY(), 5);
     forces = new ArrayList<>();
@@ -63,6 +63,12 @@ public class CelestialBody extends FreeBody implements Drawable {
     if (showTrail) {
       trail.addPoint(getX(), getY());
       trail.draw(drawingPanel, graphics);
+    }
+    if (showForces) {
+      for (Vector2D force : forces) {
+        Vector2D scaled = force.scaledBy(1e-12);
+        (new Arrow(getX(), getY(), scaled.getX(), scaled.getY())).draw(drawingPanel, graphics);
+      }
     }
   }
 
